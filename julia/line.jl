@@ -1,26 +1,26 @@
 using PyPlot
 
-n = 301
+include("cutoff.jl")
 
-function total_varation(mu, nu)
-	sum(abs(nu-mu))/2
-end
+n = 300
 
-function n_circle_transition_matrix(n::Int64)
+# lazy random walk on the line
+function line_lazy_transition_matrix(n::Int64)
 	P = zeros(n,n)
+	P[1,1] = 0.5
 	P[1,2] = 0.5
-	P[1,n] = 0.5
-	P[n,1] = 0.5
+	P[n,n] = 0.5
 	P[n, n-1] = 0.5
 
 	for i in 2:n-1
-		P[i,i-1] = 0.5
-		P[i,i+1] = 0.5
+		P[i,i-1] = 0.25
+		P[i,i] = 0.5
+		P[i,i+1] = 0.25
 	end
 	P
 end
 
-A = n_circle_transition_matrix(n)
+A = line_lazy_transition_matrix(n)
 
 distribution = zeros(1,n)
 distribution[1] = 1
@@ -32,7 +32,7 @@ tic()
 step = 5
 A_step = A^step
 
-x = 1:step:100000
+x = 1:step:200000
 x = x'
 y = zeros(1,length(x))
 
