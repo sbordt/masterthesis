@@ -2,10 +2,10 @@ using PyPlot
 
 include("cutoff.jl")
 
-n = 300
+n = 1000
 
 # lazy random walk on the line
-function line_lazy_transition_matrix(n::Int64)
+function line_lazy_transition_matrix(n::Int64, p::FloatingPoint = 0.5)
 	P = zeros(n,n)
 	P[1,1] = 0.5
 	P[1,2] = 0.5
@@ -13,23 +13,24 @@ function line_lazy_transition_matrix(n::Int64)
 	P[n, n-1] = 0.5
 
 	for i in 2:n-1
-		P[i,i-1] = 0.25
+		P[i,i-1] = (1-p)/2
 		P[i,i] = 0.5
-		P[i,i+1] = 0.25
+		P[i,i+1] = p/2
 	end
 	P
 end
 
-A = line_lazy_transition_matrix(n)
+A = line_lazy_transition_matrix(n, 0.50)
 
 distribution = zeros(1,n)
 distribution[1] = 1
 
-limit_distribution = ones(1,n)/n
+#determine the limit
+limit_distribution = (A^1e15)[1,:]
 
 # plot 
 tic()
-step = 5
+step = 1000
 A_step = A^step
 
 x = 1:step:200000
