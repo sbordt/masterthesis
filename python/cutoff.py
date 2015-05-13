@@ -7,31 +7,6 @@ import matplotlib.pyplot
 def total_variation(my,nu):
 	return abs(my-nu).sum()/2.
 
-def adjacency_to_transition_matrix(adjacency_matrix):
-	P = adjacency_matrix.copy()
-	N = P.shape[1]
-
-	for irow in range(0,N):
-		P[irow,:] = P[irow,:] / P[irow,:].sum()
-
-	return P
-
-def adjacency_to_lazy_transition_matrix(adjacency_matrix):
-	return (adjacency_to_transition_matrix(adjacency_matrix) + np.identity(N)) / 2.
-
-def random_starting_distribution(P):
-	dist = numpy.zeros(P.shape[1])
-	dist[random.randint(0, P.shape[1]-1)] = 1
-	return dist
-
-def fixed_starting_distribution(P, n):
-	dist = numpy.zeros(P.shape[1])
-	dist[n] = 1
-	return dist
-
-def stationary_distribution(P):
-	return linalg.matrix_power(P, 10 ** 15)[1,:]
-
 def plot_mixing(P, initial, stationary, tol = 0.02):	
 	# Simple algorithm that only computes P^n if n is a power of two.
 	# It then utilizes the biwise representation of integers to determine the distribution
@@ -69,6 +44,29 @@ def plot_mixing(P, initial, stationary, tol = 0.02):
 	x.sort()
 	y.sort()
 	y.reverse()
+
+	matplotlib.pyplot.plot(x, y)
+	matplotlib.pyplot.xlabel("t")
+	matplotlib.pyplot.ylabel("Distance to stationary distribution in total variation")
+	matplotlib.pyplot.show()
+	return
+
+def _plot_mixing(get_P_2_power, initial, stationary, tol = 0.02):	
+	# Simple algorithm that only uses P^n if n is a power of two.
+	# Use get_P_2_power to get that power.
+	x = [0, 1]
+	y = [total_variation(stationary, initial), total_variation(stationary, numpy.dot(initial, get_P_2_power(1)))]
+
+	# determine time till total_variation < tol
+	while y[-1] > tol:
+		x.append(x[-1]*2)
+		y.append(total_variation(stationary, numpy.dot(initial, get_P_2_power(len(x)-2))))
+
+		if x[-1] > 1e15:
+			print 'Does not convergence to the stationary distribution.'
+			return
+
+	print 'Converges to the stationary distribution.'
 
 	matplotlib.pyplot.plot(x, y)
 	matplotlib.pyplot.xlabel("t")

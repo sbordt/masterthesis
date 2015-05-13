@@ -1,33 +1,18 @@
-import networkx as nx
 import matplotlib.pyplot as plt
 import pygraphviz as pgv
 import numpy as np
 from numpy import linalg
 import scipy.io as sio
 
+execfile('transition_matrix.py')
 execfile('cutoff.py')
 
 _lambda = 1.05
 n = 20000
 
-def erdos_renyi_giant_component(n,p):
-	g = nx.fast_gnp_random_graph(n,p)
-
-	number_of_nodes = 0
-	C_1 = 0
-	for c in nx.connected_component_subgraphs(g):
-		if nx.number_of_nodes(c) > number_of_nodes:
-			number_of_nodes = nx.number_of_nodes(c)
-			C_1 = c
-
-	return C_1
-
-C_1 = erdos_renyi_giant_component(n,_lambda/n)
-
 # setup for the RW and stationary distribution
-adjacency_matrix = nx.to_numpy_matrix(C_1)
+P = ergc_transition_matrix(n,_lambda/n)
 
-P = adjacency_to_transition_matrix(adjacency_matrix)
 N = P.shape[1]
 
 # plot distance in total variation from an arbitrary starting point
