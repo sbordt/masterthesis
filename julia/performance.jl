@@ -13,9 +13,9 @@ function line_lazy_transition_matrix(n::Int64, p::FloatingPoint = 0.5)
 	P
 end
 
-@time line_lazy_transition_matrix(100)^1e12
-@time line_lazy_transition_matrix(300)^1e12
-@time line_lazy_transition_matrix(500)^1e12
-@time line_lazy_transition_matrix(800)^1e12
-@time line_lazy_transition_matrix(1000)^1e12
-@time line_lazy_transition_matrix(2000)^1e12
+#@time line_lazy_transition_matrix(100)^1e12
+#@time line_lazy_transition_matrix(300)^1e12
+#@time line_lazy_transition_matrix(500)^1e12
+#@time line_lazy_transition_matrix(800)^1e12
+#@time line_lazy_transition_matrix(1000)^1e12
+#@time line_lazy_transition_matrix(2000)^1e12
