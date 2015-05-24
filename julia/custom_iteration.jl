@@ -49,13 +49,8 @@ dist[1] = 1
 dist = dist'
 
 i = 0
-@time while i < 1e4
+@time for i=1:1e4
 	dist = dist*P
-
-	if i % 1000 == 0
-#		println(i)
-	end
-	i += 1
 end
 dist = dist'
 
@@ -126,22 +121,17 @@ y = zeros(n)
 
 mylib = "/home/sbordt/Dropbox/Masterarbeit/masterthesis/bin/gen_mat_mul"
 
-i = 0
-@time while i < 1e6
+@time for i=1:1e4
 	ccall((:gen_mat_mul, :"/home/sbordt/Dropbox/Masterarbeit/masterthesis/bin/gen_mat_mul.so"), Void, (Ptr{Float64},Ptr{Float64}), dist, y )
 	ccall((:gen_mat_mul, :"/home/sbordt/Dropbox/Masterarbeit/masterthesis/bin/gen_mat_mul.so"), Void, (Ptr{Float64},Ptr{Float64}), y, dist )
-
-	if i % 1000 == 0
-#		println(i)
-	end
-	i += 1
 end
 
-print(total_variation(dist, stationary))  
+print(total_variation(dist, stationary)) 
 
-#= build specific julia function
+#build specific julia function
 code = "function gen_mat_mul!(x,y)\n"
 
+code = string("$(code)@inbounds begin\n")
 code = string("$(code)	tmp = zeros(__MAX_NUM_SUMMANDS__)\n")
 max_num_summands = 0
 
@@ -160,9 +150,10 @@ for i in 1:n
 		end
 	end
 
-	code = string("$(code)	y[$i] = sum(tmp[1:$(num_summands)])\n")
+	code = string("$(code)	y[$i] = asum($(num_summands), tmp, 1)\n")
 end 
 
+code = string("$(code)end\n")
 code = string("$(code)end")
 
 code = replace(code, "__MAX_NUM_SUMMANDS__", max_num_summands)
@@ -175,25 +166,19 @@ close(f)
 eval(parse(code))
 
 # performance test
-dist = zeros(n)
-dist[1] = 1
+function julia_performance_test()
+	dist = zeros(n)
+	dist[1] = 1
 
-y = zeros(n)
+	y = zeros(n)
 
-i = 0
-@time while i < 1e4
-	gen_mat_mul!(dist,y)
-	
-	# swap dist and y
-	tmp = dist
-	dist = y
-	y = tmp
-
-	if i % 1000 == 0
-#		println(i)
+	@time for i=1:1e4
+		gen_mat_mul!(dist,y)
+		gen_mat_mul!(y, dist)
 	end
-	i += 1
+
+	print(total_variation(dist, stationary)) 
 end
 
-print(total_variation(dist, stationary)) =#
+julia_performance_test()
 
