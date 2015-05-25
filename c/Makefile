@@ -1,7 +1,7 @@
-all: test_open_blas test_omp
+all: clean test_open_blas test_omp
 
-
-
+clean:
+	rm -f ../bin/test_open_blas ../bin/test_omp
 
 test_open_blas:
 	gcc -o ../bin/test_open_blas test_open_blas.c -I /opt/OpenBLAS/include/ -L/opt/OpenBLAS/lib -lopenblas -lpthread -lgfortran

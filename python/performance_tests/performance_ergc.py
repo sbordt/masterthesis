@@ -13,9 +13,8 @@ P = mat['P']
  
 print N
 
-# matlab takes the same time for this
-k = 10000
-P = P.transpose()
+# 22 seconds. matlab takes the same time for this
+k = 2000
 
 x = numpy.zeros(N)
 x[0] = 1
@@ -25,11 +24,18 @@ for i in range(0,k):
 	x = P.dot(x)
 
 end = time.time()
-print end - start
+print "%(a)f seconds taken." % {'a': (end - start)}
+
+#for i in range(0,N):
+#	print x[i]
 
 print x[0]
-print x[1]
+print x[N-1]
 
+
+execfile('../ccode.py')
+
+prog = cprog_matrix_vector_product(P) 
 
 
 

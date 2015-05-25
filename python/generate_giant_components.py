@@ -15,6 +15,7 @@ for i_gc in range(0,1):
 	
 	A = nx.to_scipy_sparse_matrix(C_1)
 	P = adjacency_to_lazy_sparse_transition_matrix(A)
+	P = P.transpose()
 	N = A.shape[0]
 
 	sio.savemat("../data/giant_components/gc_" + `i_gc` + ".mat", {'N': N, 'A': A, 'P': P})
