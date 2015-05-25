@@ -1,3 +1,4 @@
+import numpy as np
 import scipy.sparse as ssp
 import os, inspect, subprocess
 
@@ -103,12 +104,21 @@ def ccode_matrix_vector_product(M):
 	code = code + "};\n\n"
 
 	# write number of summands per row
-	code = code + "const int const num_summands[] = {\n"
+	code = code + "const unsigned char const num_summands[] = {\n"
 	code = code + write_int_list(num_summands_list)
 	code = code + "};\n\n"
 
+	# where does a row start in vector/matrix indices?
+	row_start = np.cumsum(num_summands_list).tolist()
+	row_start.insert(0,0)
+	row_start.pop()
+
+	code = code + "const unsigned long const row_start[] = {\n"
+	code = code + write_int_list(row_start)
+	code = code + "};\n\n"
+
 	# write matrix indices
-	code = code + "const unsigned long const matrix_indices[] = {\n"
+	code = code + "const unsigned char const matrix_indices[] = {\n"
 	code = code + write_int_list(matrix_indices_list)
 	code = code + "};\n\n"
 
@@ -121,8 +131,6 @@ def ccode_matrix_vector_product(M):
 	code = code + "void matrix_vector(double *x, double *y)\n"
 	code = code + "{\n"
 	code = code + "    double tmp[%(a)d];\n" % {'a': max_num_summands}
-		
-
 	code = code + "    unsigned long i;\n"
 	code = code + "    unsigned long j;\n"
 	code = code + "    unsigned long k=0;\n"
@@ -135,7 +143,24 @@ def ccode_matrix_vector_product(M):
 	code = code + "        }\n"
 	code = code + "        y[i] = cblas_dasum(num_summands[i], tmp, 1);\n"
 	code = code + "    }\n"		
+	code = code + "}\n\n"
 
+	# function for parital sum
+	code = code + "void matrix_vector_partial(double *x, double *y, unsigned long start_row, unsigned long end_row)\n"
+	code = code + "{\n"
+	code = code + "    double tmp[%(a)d];\n" % {'a': max_num_summands}
+	code = code + "    unsigned long i;\n"
+	code = code + "    unsigned long j;\n"
+	code = code + "    unsigned long k=row_start[start_row];\n"
+	code = code + "    for (i=start_row; i<end_row; i=i+1)\n"	
+	code = code + "    {\n"
+	code = code + "        for (j=0; j<num_summands[i]; j=j+1)\n"
+	code = code + "        {\n"
+	code = code + "            tmp[j] = x[vector_indices[k]] * matrix[matrix_indices[k]];\n"
+	code = code + "            k = k+1;\n"
+	code = code + "        }\n"
+	code = code + "        y[i] = cblas_dasum(num_summands[i], tmp, 1);\n"
+	code = code + "    }\n"		
 	code = code + "}\n"
 
 	return code

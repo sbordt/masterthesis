@@ -8,3 +8,6 @@ test_open_blas:
 
 test_omp:
 	gcc -fopenmp -o ../bin/test_omp test_omp.c
+
+test_mat_file:
+	gcc -o ../bin/test_mat_file test_mat_file.c
