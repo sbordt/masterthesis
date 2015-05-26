@@ -6,7 +6,7 @@ import time
 
 execfile('transition_matrix.py')
 
-n = 1000000
+n = 100000
 _lambda = 1.1
 
 for i_gc in range(0,1):

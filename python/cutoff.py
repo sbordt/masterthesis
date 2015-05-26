@@ -7,6 +7,11 @@ import matplotlib.pyplot
 def total_variation(my,nu):
 	return abs(my-nu).sum()/2.
 
+def relative_error(my,nu):
+	divisor = numpy.maximum(numpy.minimum(my,nu), 1e-20)
+	
+	return numpy.divide(abs(my-nu), divisor).max()
+
 def plot_mixing(P, initial, stationary, tol = 0.02):	
 	# Simple algorithm that only computes P^n if n is a power of two.
 	# It then utilizes the biwise representation of integers to determine the distribution

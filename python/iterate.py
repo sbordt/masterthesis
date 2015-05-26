@@ -1,33 +1,116 @@
 import numpy 
 import scipy.io as sio
 import scipy.sparse as ssp
-import time
+import random, os, time
+
+from multiprocessing import Pool
 
 execfile('transition_matrix.py')
 execfile('cutoff.py')
 
-mat = sio.loadmat("../data/giant_components/gc_0.mat")
+def load_gc(igc):
+	return sio.loadmat("../data/giant_components/gc_" + `igc` + ".mat")
 
-N = mat['N'][0][0]
-P = mat['P']
+def save_x(x, i):
+	sio.savemat("../data/x_" + `i` + ".mat", {'x': x})
+	return
+
+def load_x(i):
+	mat = sio.loadmat("../data/x_" + `i` + ".mat")
+	x = mat['x'][0]
+	return x 
+
+def remove_x(i):
+	os.remove("../data/x_" + `i` + ".mat")
+
+def iterate(i,igc):
+	mat = load_gc(igc)
+	P = mat['P']
+
+	x = load_x(i)
+
+ 	for j in range(0,10000):
+ 		x = P.dot(x)
+
+ 	save_x(x,i)
+ 	return 
+
+def main():
+	igc = 0
+
+	mat = load_gc(igc)
+	N = mat['N'][0][0]
+
+	print N
+	num_simulations = 3
+	max_steps = 500
+
+	# starting positions: random but the same for the same graph
+	random.seed(N)
+	x = [[]]
+
+	for i in range(0, num_simulations):
+		x[0].append(numpy.zeros(N))
+		x[0][i][ random.randint(0,N) ] = 1
+		save_x(x[0][i],i)
+
+	 # start num_simulations worker processes
+	pool = Pool(processes=num_simulations)             
+	results = [0,0,0]
+
+	# iteration loop
+	for istep in range(1,max_steps):
+		start = time.time()
+
+		# iterate one step
+		for i in range(0,num_simulations):
+			results[i] = pool.apply_async(iterate, (i,igc)) 
+
+		# fetch results
+		x.append([])
+
+		for i in range(0,num_simulations):
+			results[i].get()
+			x[istep].append( load_x(i) )
+
+		end = time.time()
+
+		# compute the error and exit loop 
+		rel_err = max(relative_error(x[istep][0], x[istep][1]), relative_error(x[istep][1], x[istep][2]))		
+		print "Step "  + `istep` +  " completed (%(a)f seconds)." % {'a': (end - start)}
+		print "Relative error: %(a).15f" % {'a': rel_err}
+
+		if rel_err < 1e-10:
+			print "Relative error smaller than treshold."
+			break 
+
+	# delete temporary files
+	for i in range(0,num_simulations):
+		remove_x(i)
+
+	# process iteration data
+	M = []
+	d_tv = []
+
+	for i in range(0,num_simulations):
+		L = []
+		d_tv.append([])
+
+		for j in range(0,istep+1):
+			L.append(x[j][i])
+			d_tv[i].append( total_variation(x[j][i], x[istep][i]) )
+		
+		M.append(numpy.matrix(L))
  
-print N
+ 	# save to file
+	for i in range(0,num_simulations):
+		sio.savemat("/media/sbordt/LINUXSHARE/masterthesis_data/gc_" + `igc` + "_iter_" + `i` + ".mat", {'x': M[i], 'd_tv': d_tv[i]})
 
-x = numpy.zeros(N)
-x[0] = 1
+	return
 
-num_steps = 1000
-step_length = 20000
+main()
 
-for i_step in range(0,num_steps):
-	# iterate 
-	for i in range(0,step_length):
-	 	x = P.dot(x)
-
-	# print & save
-	print "Step " + `i_step` + " completed."
-	print x[0]
-	print x[N-1]
-
-	sio.savemat("../data/step_" + `i_step` + ".mat", {'x': x})
-
+# 22 seconds one computation
+# ~70 seconds 4 computations one matrix
+#  68 seconds 4 computations 4 matrices
+# 50 seconds 3 computations 3 matrices
