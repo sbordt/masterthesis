@@ -1,1 +1,0 @@
-# SRW on the giant component ( vertices) of a random graph (n=100000, lambda=1.05)
