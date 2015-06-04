@@ -29,9 +29,9 @@ print N
 # print x[0]
 # print x[N-1]
 
-execfile('../ccode.py')
+#execfile('../ccode.py')
 
-prog = cprog_matrix_vector_product(P) 
+#prog = cprog_matrix_vector_product(P) 
 
 
 

@@ -7,13 +7,13 @@ execfile('../transition_matrix.py')
 execfile('../cutoff.py')
 
 n = 10000
-k = 100000
+k = 10000
 
 P = line_lazy_transition_matrix(n)
 P_csr = csr_matrix(P)
 
 # matlab takes 5.5 seconds
-sio.savemat("../../data/sparse.mat", {'matrix': P_csr})
+#sio.savemat("../../data/sparse.mat", {'matrix': P_csr})
 
 # dense matrix multiplication
 # start = time.time()

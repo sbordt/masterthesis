@@ -1,8 +1,8 @@
 OUTDIR = ../../bin/
 
-CFLAGS = -O2 -lopenblas -lpthread -lgfortran
+CFLAGS = -O2 -lpthread -lgfortran
 
-OPEN_BLAS = -I /opt/OpenBLAS/include/ -L/opt/OpenBLAS/lib
+OPEN_BLAS = -I /opt/OpenBLAS/include/ -L/opt/OpenBLAS/lib -lopenblas
 
 all: clean matrix_vector test_matrix_vector
 

@@ -2,7 +2,7 @@ import numpy
 import random
 import scipy.io as sio
 
-execfile('transition_matrix.py')
+execfile('../transition_matrix.py')
 
 # Test for SRW on the line
 A = line_adjacency_matrix(5)
@@ -31,11 +31,11 @@ P_sparse = adjacency_to_lazy_sparse_transition_matrix(A_sparse)
 assert (P == P_sparse.toarray()).all()
 
 # Test C code generation
-execfile('ccode.py')
+#execfile('ccode.py')
 
-P = line_lazy_transition_matrix(25)
-P = P.transpose()
-code = ccode_matrix_vector_product(P)
-print code
+#P = line_lazy_transition_matrix(25)
+#P = P.transpose()
+#code = ccode_matrix_vector_product(P)
+#print code
 
-prog = cprog_matrix_vector_product(P) 
+#prog = cprog_matrix_vector_product(P) 

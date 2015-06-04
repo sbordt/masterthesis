@@ -36,7 +36,7 @@ def iterate(i,igc):
  	return 
 
 def main():
-	igc = 0
+	igc = 1
 
 	mat = load_gc(igc)
 	N = mat['N'][0][0]
@@ -78,9 +78,9 @@ def main():
 		# compute the error and exit loop 
 		rel_err = max(relative_error(x[istep][0], x[istep][1]), relative_error(x[istep][1], x[istep][2]))		
 		print "Step "  + `istep` +  " completed (%(a)f seconds)." % {'a': (end - start)}
-		print "Relative error: %(a).15f" % {'a': rel_err}
+		print "Relative error: %(a).8f" % {'a': rel_err}
 
-		if rel_err < 1e-10:
+		if rel_err < 1e-2:
 			print "Relative error smaller than treshold."
 			break 
 

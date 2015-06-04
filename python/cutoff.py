@@ -2,7 +2,7 @@ import numpy
 from numpy import linalg
 import random
 import math
-import matplotlib.pyplot
+#import matplotlib.pyplot
 
 def total_variation(my,nu):
 	return abs(my-nu).sum()/2.

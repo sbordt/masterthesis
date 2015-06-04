@@ -6,7 +6,7 @@ import time
 
 execfile('transition_matrix.py')
 
-n = 100000
+n = 10
 _lambda = 1.1
 
 for i_gc in range(0,1):
@@ -19,5 +19,6 @@ for i_gc in range(0,1):
 	N = A.shape[0]
 
 	sio.savemat("../data/giant_components/gc_" + `i_gc` + ".mat", {'N': N, 'A': A, 'P': P})
+	print P
 
 	print N
