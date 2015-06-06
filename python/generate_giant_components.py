@@ -1,15 +1,12 @@
-import numpy 
 import random
 import scipy.io as sio
-import scipy.sparse as ssp
-import time
 
 execfile('transition_matrix.py')
 
-n = 100000
-_lambda = 1.1
+n = 1000000
+_lambda = 1.01
 
-for i_gc in range(0,1):
+for i_gc in range(0,10):
 	random.seed(i_gc)
 	C_1 = erdos_renyi_giant_component(n, _lambda/n)
 	

@@ -1,109 +1,92 @@
-import numpy 
-import scipy.io as sio
-import scipy.sparse as ssp
-import random, os, time
-
-path = '/media/sbordt/LINUXSHARE/masterthesis_data/'
-
+execfile('config.py')
 execfile('transition_matrix.py')
 execfile('cutoff.py')
+execfile('mc_iterate.py')
+execfile('mat_file_format.py')
 
-def load_gc(igc):
-	return sio.loadmat("../data/giant_components/gc_" + `igc` + ".mat")
+def gc_file_path(ig,igc):
+	return storage_path+"/giant_components/generation_"+`ig`+"/gc_" + `igc` + ".mat"
 
-def save_x(x, i):
-	sio.savemat("../data/x_" + `i` + ".mat", {'x': x})
+def load_gc(ig,igc):
+	return sio.loadmat(gc_file_path(ig,igc))
+
+def gc_add_dict(ig,igc,d):
+	sio.savemat(gc_file_path(ig,igc), dict(load_gc(ig,igc), **d))
 	return
 
-def load_x(i):
-	mat = sio.loadmat("../data/x_" + `i` + ".mat")
-	x = mat['x'][0]
-	return x 
+def iterate_distributions(ig,igc):
+	TOL = 1e-2
 
-def remove_x(i):
-	os.remove("../data/x_" + `i` + ".mat")
-
-def iterate(i,igc):
-	mat = load_gc(igc)
-	P = mat['P']
-
-	x = load_x(i)
-
- 	for j in range(0,10000):
- 		x = P.dot(x)
-
- 	save_x(x,i)
- 	return 
-
-def main():
-	igc = 1
-
-	mat = load_gc(igc)
-	N = mat['N'][0][0]
+	mat = load_gc(ig,igc)
+	N = get_N(mat)
+	P = get_P(mat)
 	print N
 	
-	num_simulations = 3
-	max_steps = 500
+	num_simulations = 5
 
-	x = uniform_starting_point_distributions(N,num_simulations)
+	x = []
+	x.append(uniform_starting_point_distributions(N,num_simulations))
 
-	 # start num_simulations worker processes
-	pool = Pool(processes=num_simulations)             
-	results = [0,0,0]
+	# iterate in steps that are powers of 2
+	power_of_2 = 0
+	total_steps = 0
 
-	# iteration loop
-	for istep in range(1,max_steps):
+	while True:
+		steps = pow(2,power_of_2)-total_steps
+		total_steps = total_steps+steps
+
 		start = time.time()
-
-		# iterate one step
-		for i in range(0,num_simulations):
-			results[i] = pool.apply_async(iterate, (i,igc)) 
-
-		# fetch results
-		x.append([])
-
-		for i in range(0,num_simulations):
-			results[i].get()
-			x[istep].append( load_x(i) )
-
+		x.append(mc_iterate(P,x[power_of_2],steps))
 		end = time.time()
 
+		print `steps`+" step(s) completed for a total of "+`total_steps`+" step(s) (that took %(sec)f seconds)." % {'sec': (end - start)}
+
 		# compute the error and exit loop 
-		rel_err = max(relative_error(x[istep][0], x[istep][1]), relative_error(x[istep][1], x[istep][2]))		
-		print "Step "  + `istep` +  " completed (%(a)f seconds)." % {'a': (end - start)}
+		rel_error = 0
+
+		for i in xrange(num_simulations):
+			rel_err = max(rel_error, relative_error(x[power_of_2][:,0], x[power_of_2][:,i]))
+		
 		print "Relative error: %(a).8f" % {'a': rel_err}
 
-		if rel_err < 1e-2:
-			print "Relative error smaller than treshold."
+		if rel_err < TOL:
+			print "Relative error smaller than treshold!"
 			break 
 
-	# delete temporary files
-	for i in range(0,num_simulations):
-		remove_x(i)
+		power_of_2 = power_of_2+1
 
-	# process iteration data
-	M = []
-	d_tv = []
-
-	for i in range(0,num_simulations):
-		L = []
-		d_tv.append([])
-
-		for j in range(0,istep+1):
-			L.append(x[j][i])
-			d_tv[i].append( total_variation(x[j][i], x[istep][i]) )
-		
-		M.append(numpy.matrix(L))
- 
- 	# save to file
-	for i in range(0,num_simulations):
-		sio.savemat("/media/sbordt/LINUXSHARE/masterthesis_data/gc_" + `igc` + "_iter_" + `i` + ".mat", {'x': M[i], 'd_tv': d_tv[i]})
+	# save iteration data
+	for i in xrange(power_of_2):
+		gc_add_dict(ig, igc, {"x_%(i)d" % {'i': pow(2,i)}: x[i]})	 
 
 	return
 
-main()
+def compute_stationary_distribution(ig,igc):
+	mat = load_gc(ig,igc)
 
-# 22 seconds one computation
-# ~70 seconds 4 computations one matrix
-#  68 seconds 4 computations 4 matrices
-# 50 seconds 3 computations 3 matrices
+	x = get_distributions(mat)
+
+	return x[-1][:,0]
+
+def compute_d_tv(ig,igc):
+	mat = load_gc(ig,igc)
+
+	x = get_distributions(mat)
+	stationary = get_stationary_distribution(mat)
+	num_steps = get_num_iteration_steps(mat)
+
+	d_tv = numpy.zeros(num_steps)
+
+	for i in xrange(get_num_distributions(mat)):
+		for j in xrange(num_steps):
+			d_tv[j] = total_variation(stationary, x[j][:,i])
+
+		gc_add_dict(ig, igc, {"d_tv_%(i)d" % {'i': i}: d_tv}) 
+
+	return
+
+
+
+
+
+

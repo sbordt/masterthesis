@@ -1,5 +1,13 @@
-Linux only. Need matlab installed and be able to locate matlab shared libraries.
+Linux only. At the moment only the python code is relevant.
 
-Dependencies:
+*.mat file format for graph markov chains:
 
-Suite Sparse
+N = n of markov chain
+
+A = adjacency matrix of graph
+
+P = transposed transition matrix of the markox chain
+
+x_t = matrix with any number of columns where each column is the distibution after time t and t=1 <=> inital distibution
+
+stationary = stationary distribution

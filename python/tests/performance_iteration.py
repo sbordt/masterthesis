@@ -12,21 +12,9 @@ mat = sio.loadmat("../../data/tests/graph.mat")
 N = mat['N'][0][0]
 A = mat['A']
 P = mat['P']
+P = P.tocsr()
 
 print N
-
-x = numpy.zeros(N)
-x[0] = 1
-
-#x = numpy.zeros((N,5))
-#x[0,0] = 1
-#x[0,1] = 1
-#x[0,2] = 1
-#x[0,3] = 1
-#x[0,4] = 1
-
-sio.savemat("../../data/tests/x.mat", {'x': x})
-
 k = 10000
 
 # matlab takes 5.5 seconds
@@ -43,18 +31,55 @@ k = 10000
 
 # print x
 
-# sparse matrix multiplication in python
-P = P.tocsr()
+# single distribution
+x = numpy.zeros(N)
+x[0] = 1
 start = time.time()
-
 for i in xrange(k):
 	x = P.dot(x)
-
 end = time.time()
 print "Python:"
 print end - start 
-
 print x
+
+x = numpy.zeros(N)
+x[0] = 1
+start = time.time()
+x = mc_iterate_py(P,x,k)
+end = time.time()
+print "Python iteration:"
+print end - start 
+print x
+
+x = numpy.zeros(N)
+x[0] = 1
+start = time.time()
+x = mc_iterate_py_process(P,x,k)
+end = time.time()
+print "Python process iteration:"
+print end - start 
+print x
+
+# 10 distributions
+k = 10000
+
+x = uniform_starting_point_distributions(N,10)
+start = time.time()
+x = mc_iterate_py(P,x,k)
+end = time.time()
+print "Python iteration:"
+print end - start 
+print x
+
+x = uniform_starting_point_distributions(N,10)
+start = time.time()
+x = mc_iterate_py_process(P,x,k)
+end = time.time()
+print "Python process iteration:"
+print end - start 
+print x
+
+
 
 # using an external c application
 #base_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))

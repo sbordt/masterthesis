@@ -62,9 +62,8 @@ x_0 = load_x(0)
 assert (x_0 == x[:,0]).all()
 remove_x(0)
 
-
-print mc_iterate(P,x,1000)
-print mc_iterate(P,x,10000)
+#print mc_iterate(P,x,1000)
+#print mc_iterate(P,x,100000)
 
 
 
