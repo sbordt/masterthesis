@@ -3,6 +3,7 @@
 
 import networkx as nx
 import scipy.sparse as ssp
+import numpy, random
 
 def random_starting_distribution(P):
 	dist = numpy.zeros(P.shape[0])
@@ -14,6 +15,19 @@ def fixed_starting_distribution(P, n):
 	dist[n] = 1
 	return dist
 
+
+# uniform starting positions: random but the same for the same n
+def uniform_starting_point_distributions(n,k):
+	random.seed(n)
+	x = numpy.zeros((n,k))
+
+	indices = random.sample(xrange(n),k)
+
+	for i in range(0,k):
+		x[indices[i],i] = 1
+
+	return x
+
 def stationary_distribution(P):
 	return linalg.matrix_power(P, 10 ** 15)[1,:]
 
@@ -23,23 +37,23 @@ def stationary_distribution(P):
 
 def adjacency_to_transition_matrix(A):
 	P = A.copy()
-	N = A.shape[0]
+	n = A.shape[0]
 
-	for irow in range(0,N):
+	for irow in range(0,n):
 		P[irow,:] = P[irow,:] / P[irow,:].sum()
 
 	return P
 
 def adjacency_to_lazy_transition_matrix(A):
-	N = A.shape[0]
+	n = A.shape[0]
 
-	return (adjacency_to_transition_matrix(A) + numpy.identity(N)) / 2.
+	return (adjacency_to_transition_matrix(A) + numpy.identity(n)) / 2.
 
 def adjacency_to_sparse_transition_matrix(A):
 	(I,J,V) = ssp.find(A)
-	N = A.shape[0]
+	n = A.shape[0]
 
-	P = ssp.lil_matrix((N,N))
+	P = ssp.lil_matrix((n,n))
 	nnz = I.shape[0]
 
 	row_start = 0
@@ -65,9 +79,9 @@ def adjacency_to_sparse_transition_matrix(A):
 
 def adjacency_to_lazy_sparse_transition_matrix(A):
 	(I,J,V) = ssp.find(A)
-	N = A.shape[0]
+	n = A.shape[0]
 
-	P = ssp.lil_matrix((N,N))
+	P = ssp.lil_matrix((n,n))
 	nnz = I.shape[0]
 
 	row_start = 0
@@ -135,7 +149,7 @@ def ergc_sparse_transition_matrix(n,p):
 ################################################################
 
 def line_adjacency_matrix(n):
-	A = numpy.zeros((n,n))
+	A = ssp.lil_matrix((n,n))
 	A[0,1] = 1
 	A[n-1,n-2] = 1
 
@@ -147,7 +161,7 @@ def line_adjacency_matrix(n):
 
 # lazy random walk on the line
 def line_lazy_transition_matrix(n, p = 0.5):
-	P = numpy.zeros((n,n))
+	P = ssp.lil_matrix((n,n))
 	P[0,0] = 0.5
 	P[0,1] = 0.5
 	P[n-1,n-1] = 0.5

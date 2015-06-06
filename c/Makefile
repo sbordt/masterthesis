@@ -12,10 +12,10 @@ SUITESPARSE = -lcxsparse
 
 CFLAGS = -O2 -lpthread -lgfortran
 
-all: clean test_open_blas test_omp test_mat_file
+all: clean test_open_blas test_omp iterate_mc
 
 clean:
-	rm -f $(OUTDIR)test_open_blas $(OUTDIR)test_omp $(OUTDIR)test_mat_file
+	rm -f $(OUTDIR)test_open_blas $(OUTDIR)test_omp $(OUTDIR)iterate_mc
 
 test_open_blas:
 	gcc -o $(OUTDIR)test_open_blas test_open_blas.c $(OPEN_BLAS) $(CFLAGS)
@@ -23,6 +23,6 @@ test_open_blas:
 test_omp:
 	gcc -fopenmp -o $(OUTDIR)test_omp test_omp.c
 
-test_mat_file:
-	gcc -o $(OUTDIR)test_mat_file test_mat_file.c $(MATLAB) $(MATLABLINKS) $(SUITESPARSE) $(CFLAGS)
+iterate_mc:
+	gcc -o $(OUTDIR)iterate_mc iterate_mc.c $(MATLAB) $(MATLABLINKS) $(SUITESPARSE) $(CFLAGS)
 

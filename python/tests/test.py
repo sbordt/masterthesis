@@ -1,7 +1,6 @@
-import numpy 
-import random
-import scipy.io as sio
-
+################################################################
+# transition_matrix.py
+################################################################
 execfile('../transition_matrix.py')
 
 # Test for SRW on the line
@@ -30,12 +29,60 @@ P_sparse = adjacency_to_lazy_sparse_transition_matrix(A_sparse)
 
 assert (P == P_sparse.toarray()).all()
 
-# Test C code generation
-#execfile('ccode.py')
+# uniform_starting_points
+x = uniform_starting_point_distributions(10,4)
+y = uniform_starting_point_distributions(10,4)
 
-#P = line_lazy_transition_matrix(25)
-#P = P.transpose()
-#code = ccode_matrix_vector_product(P)
-#print code
+assert (x == y).all()
 
-#prog = cprog_matrix_vector_product(P) 
+################################################################
+# mc_iterate.py
+################################################################
+execfile('../mc_iterate.py')
+
+P = line_lazy_transition_matrix(50)
+P = P.transpose()
+P = P.tocsr()
+
+assert ssp.isspmatrix_csr(P)
+
+x = uniform_starting_point_distributions(50,5)
+
+# load/save/remove P
+save_P(P)
+P = load_P()
+assert ssp.isspmatrix_csr(P)
+remove_P()
+
+# load/save/remove x 
+save_x(x,0)
+x_0 = load_x(0)
+save_x(x_0,0)
+x_0 = load_x(0)
+assert (x_0 == x[:,0]).all()
+remove_x(0)
+
+
+print mc_iterate(P,x,1000)
+print mc_iterate(P,x,10000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
