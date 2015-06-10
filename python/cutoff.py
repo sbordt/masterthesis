@@ -1,4 +1,4 @@
-import numpy, random, math, time
+import numpy, random, math, time, os, os.path
 
 import matplotlib.pyplot
 
@@ -34,5 +34,11 @@ def load_gc(ig,igc):
 	return sio.loadmat(gc_file_path(ig,igc))
 
 def save_gc(ig,igc,mat):
-	sio.savemat(gc_file_path(ig,igc), mat)
+	path = gc_file_path(ig,igc)
+	directory = os.path.dirname(path)
+
+	if not os.path.exists(directory):
+		os.makedirs(directory)
+
+	sio.savemat(path, mat)
 	return

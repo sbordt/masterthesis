@@ -1,3 +1,5 @@
+import time
+import matplotlib.pyplot as plt
 
 def iterate_distributions(mat, TOL=1e-1):
 
@@ -29,21 +31,23 @@ def iterate_distributions(mat, TOL=1e-1):
 		seconds = end-start
 		total_seconds = total_seconds + seconds
 
-		print `steps`+" step(s) completed for a total of "+`total_steps`+" step(s) (that took %(sec).2f seconds for a total of %(total_min).0f minutes)." % {'sec': seconds, 'total_min': (total_seconds / 60.0)}
+		print time.strftime("%d %b %H:%M", time.localtime())+": "+`steps`+" step(s) completed for a total of "+`total_steps`+" step(s) (that took %(sec).2f seconds for a total of %(total_min).0f minutes)." % {'sec': seconds, 'total_min': (total_seconds / 60.0)}
 
 		# save iteration data
 		mat = dict(mat, **{"x_%(i)d" % {'i': total_steps}: x[-1]})
 
 		# compute the error and exit loop if the error is < TOL
-		rel_error = 0
+		rel_err = 0
+		tv_err = 0
 
 		for i in xrange(ndistr):
-			rel_err = max(rel_error, relative_error(x[power_of_2][:,0], x[power_of_2][:,i]))
+			rel_err = max(rel_err, relative_error(x[power_of_2][:,0], x[power_of_2][:,i]))
+			tv_err = max(tv_err, total_variation(x[power_of_2][:,0], x[power_of_2][:,i]))
 		
-		print "Relative error: %(a).8f" % {'a': rel_err}
+		print "Relative error: %(a).4f. Total variation error: %(b).4f." % {'a': rel_err, 'b': tv_err}
 
-		if rel_err < TOL:
-			print "Relative error smaller than treshold!"
+		if rel_err < TOL or tv_err < 0.05:
+			print "Error smaller than treshold!"
 			break 
 
 		power_of_2 = power_of_2+1
@@ -75,15 +79,16 @@ def compute_d_tv(mat):
 def plot_mixing(mat):
 
 	x = get_iteration_steps(mat)
+	fig = plt.figure()
 
 	for i in xrange(get_num_distributions(mat)):
-		y = mat["d_tv_%(i)d" % {'i': i}]
+		y = get_tv_mixing(mat,i)
 
-		matplotlib.pyplot.plot(x, y)
+		plt.plot(x, y)
 
-	matplotlib.pyplot.xlabel("t")
-	matplotlib.pyplot.ylabel("Distance to stationary distribution in total variation")
-	matplotlib.pyplot.show()	
+	plt.xlabel("t")
+	plt.ylabel("Distance to stationary distribution in total variation")
+	plt.show()	
 	return
 
 def analyze_markov_chain(mat):

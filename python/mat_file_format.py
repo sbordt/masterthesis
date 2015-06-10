@@ -39,3 +39,12 @@ def get_stationary_distribution(mat):
 	# matrix shape
 	return mat['stationary'][0]
 
+def get_tv_mixing(mat,i):
+	x = mat["d_tv_%(i)d" % {'i': i}]
+
+	if x.ndim == 2:
+		return x[0]
+
+	return x
+	
+

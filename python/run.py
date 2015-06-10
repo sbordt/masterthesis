@@ -6,11 +6,21 @@ for ig in xrange(4):
 	for igc in xrange(3):
 		mat = cutoff.load_gc(ig, igc)
 
-		mat = cutoff.analyze_markov_chain(mat)
+		if cutoff.get_num_iteration_steps(mat) == 0:
+			mat = cutoff.analyze_markov_chain(mat)
 
-		cutoff.save_gc(ig, igc, mat)
+			cutoff.save_gc(ig, igc, mat)
 
-		#cutoff.plot_mixing(mat)
+#for ig in xrange(4):
+#	for igc in xrange(3):
+#		mat = cutoff.load_gc(ig, igc)
+
+#		cutoff.plot_mixing(mat)
+
+
+
+
+
 
 #G = nx.complete_graph(100)
 

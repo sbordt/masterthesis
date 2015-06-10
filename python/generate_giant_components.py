@@ -21,4 +21,12 @@ def generate_ginat_components(ig,n,_lambda,k):
 #generate_ginat_components(0, 100000, 1.1, 3)
 #generate_ginat_components(1, 1000000, 1.01, 3)
 #generate_ginat_components(2, 100000, 1.05, 3)
-generate_ginat_components(3, 100000, 1.01, 3)
+#generate_ginat_components(3, 100000, 1.01, 3)
+
+#generate_ginat_components(4,    10000, 1.05, 3)
+#generate_ginat_components(5,    20000, 1.05, 3)
+#generate_ginat_components(6,    50000, 1.05, 3)
+#generate_ginat_components(7,   100000, 1.05, 3)
+#generate_ginat_components(8,   200000, 1.05, 3)
+#generate_ginat_components(9,   500000, 1.05, 3)
+#generate_ginat_components(10, 1000000, 1.05, 3)
