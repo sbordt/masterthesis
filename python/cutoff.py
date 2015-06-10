@@ -1,8 +1,19 @@
-import numpy
+import numpy, random, math, time
+
+import matplotlib.pyplot
+
+import networkx as nx
+import scipy.sparse as ssp
+
 from numpy import linalg
-import random
-import math
-#import matplotlib.pyplot
+
+# configuration file
+execfile('config.py')
+
+# these require only the configuration file
+execfile('mc_iterate.py')
+execfile('transition_matrix.py')
+execfile('mat_file_format.py')
 
 def total_variation(my,nu):
 	return abs(my-nu).sum()/2.
@@ -12,69 +23,16 @@ def relative_error(my,nu):
 	
 	return numpy.divide(abs(my-nu), divisor).max()
 
-def plot_mixing(P, initial, stationary, tol = 0.02):	
-	# Simple algorithm that only computes P^n if n is a power of two.
-	# It then utilizes the biwise representation of integers to determine the distribution
-	# at any any time t.
-	x = [0, 1]
-	y = [total_variation(stationary, initial), total_variation(stationary, numpy.dot(initial, P))]
+# these require previously included files
+execfile('analyze_markov_chain.py')
+execfile('graph.py')
 
-	# determine time till total_variation < tol
-	P_2_powers = [P]
+def gc_file_path(ig,igc):
+	return storage_path+"giant_components/generation_"+`ig`+"/gc_" + `igc` + ".mat"
 
-	while y[-1] > tol:
-		x.append(x[-1]*2)
-		P_2_powers.append(linalg.matrix_power(P_2_powers[-1], 2))
-		y.append(total_variation(stationary, numpy.dot(initial, P_2_powers[-1])))
+def load_gc(ig,igc):
+	return sio.loadmat(gc_file_path(ig,igc))
 
-		if x[-1] > 1e15:
-			print 'Does not convergence to the stationary distribution.'
-			return
-
-	print 'Converges to the stationary distribution.'
-
-	# compute additional points to smooth the plot
-	x_2 = map(int, numpy.linspace(3,x[-1],num=20))
-
-	for idx, val in enumerate(x_2):
-		dist = initial
-		for  power, M in enumerate(P_2_powers):
-			if val & int((2 ** power)):
-				dist = numpy.dot(dist, M)
-
-		x.append(val)
-		y.append(total_variation(stationary, dist))
-
-	# can do this sort-reverse trick since the distance in total variation is decreasing (is it? :) )
-	x.sort()
-	y.sort()
-	y.reverse()
-
-	matplotlib.pyplot.plot(x, y)
-	matplotlib.pyplot.xlabel("t")
-	matplotlib.pyplot.ylabel("Distance to stationary distribution in total variation")
-	matplotlib.pyplot.show()
-	return
-
-def _plot_mixing(get_P_2_power, initial, stationary, tol = 0.02):	
-	# Simple algorithm that only uses P^n if n is a power of two.
-	# Use get_P_2_power to get that power.
-	x = [0, 1]
-	y = [total_variation(stationary, initial), total_variation(stationary, numpy.dot(initial, get_P_2_power(1)))]
-
-	# determine time till total_variation < tol
-	while y[-1] > tol:
-		x.append(x[-1]*2)
-		y.append(total_variation(stationary, numpy.dot(initial, get_P_2_power(len(x)-2))))
-
-		if x[-1] > 1e15:
-			print 'Does not convergence to the stationary distribution.'
-			return
-
-	print 'Converges to the stationary distribution.'
-
-	matplotlib.pyplot.plot(x, y)
-	matplotlib.pyplot.xlabel("t")
-	matplotlib.pyplot.ylabel("Distance to stationary distribution in total variation")
-	matplotlib.pyplot.show()
+def save_gc(ig,igc,mat):
+	sio.savemat(gc_file_path(ig,igc), mat)
 	return

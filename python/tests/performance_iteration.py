@@ -3,9 +3,8 @@ import time, os, inspect
 import scipy.io as sio
 from scipy.sparse import *
 
+execfile('../config.py')
 execfile('../transition_matrix.py')
-#execfile('../cutoff.py')
-
 execfile('../mc_iterate.py')
 
 mat = sio.loadmat("../../data/tests/graph.mat")

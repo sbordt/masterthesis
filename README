@@ -8,6 +8,6 @@ A = adjacency matrix of graph
 
 P = transposed transition matrix of the markox chain
 
-x_t = matrix with any number of columns where each column is the distibution after time t and t=1 <=> inital distibution
+x_t = matrix with any number of columns where each column is the distibution after time t and t=0 <=> inital distibution
 
 stationary = stationary distribution

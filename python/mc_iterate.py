@@ -4,8 +4,6 @@ import os, inspect, subprocess
 import scipy.io as sio
 from multiprocessing import Pool
 
-tmp_path = '/home/sbordt/Desktop/masterthesis_tmp/'
-
 def load_P():
 	mat = sio.loadmat(tmp_path+"P.mat")
 	return mat['P'].tocsr()

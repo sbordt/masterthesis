@@ -1,13 +1,23 @@
-execfile('ergc.py')
+import networkx as nx
 
-mat = load_gc(0,0)
+import cutoff
 
-print get_stationary_distribution(mat)
+for ig in xrange(4):
+	for igc in xrange(3):
+		mat = cutoff.load_gc(ig, igc)
 
+		mat = cutoff.analyze_markov_chain(mat)
 
-print get_num_distributions(mat)
+		cutoff.save_gc(ig, igc, mat)
 
-print get_num_iteration_steps(mat)
+		#cutoff.plot_mixing(mat)
 
-for igc in xrange(10):
-	compute_d_tv(0,igc)
+#G = nx.complete_graph(100)
+
+#mat = cutoff.analyze_graph_srw(G)
+
+#print cutoff.get_iteration_steps(mat)
+#print cutoff.get_stationary_distribution(mat)
+
+#cutoff.plot_mixing(mat)
+
