@@ -12,8 +12,9 @@ execfile('config.py')
 
 # these require only the configuration file
 execfile('mc_iterate.py')
-execfile('transition_matrix.py')
 execfile('mat_file_format.py')
+
+
 
 def total_variation(my,nu):
 	return abs(my-nu).sum()/2.
@@ -25,7 +26,6 @@ def relative_error(my,nu):
 
 # these require previously included files
 execfile('analyze_markov_chain.py')
-execfile('graph.py')
 
 def gc_file_path(ig,igc):
 	return storage_path+"giant_components/generation_"+`ig`+"/gc_" + `igc` + ".mat"
@@ -42,3 +42,10 @@ def save_gc(ig,igc,mat):
 
 	sio.savemat(path, mat)
 	return
+
+def has_gc(ig,igc):
+	return os.path.isfile(gc_file_path(ig,igc)) 
+
+# these are additional utilities
+execfile('transition_matrix.py')
+execfile('analyze_graph.py')

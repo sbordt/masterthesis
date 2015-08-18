@@ -1,3 +1,8 @@
+################################################################
+# This file implements simultaneously iterating several 
+# distributions wrt. a markov chain using multiple CPU cores.
+# The essential method is mc_iterate.
+################################################################
 import numpy
 import scipy.sparse as ssp
 import os, inspect, subprocess
@@ -108,13 +113,3 @@ def py_iteration_process(i,k):
 
  	save_x(x,i)
  	return
-
-#def mc_iterate_c(fsparse, nsparse, fdense, ndense, num_iter, fout):
-#	base_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-#
-#	args = (os.path.abspath(base_path+"/../bin/iterate_mc"), fsparse, nsparse, fdense, ndense, num_iter, fout)
-#	print args
-#	popen = subprocess.Popen(args, stdout=subprocess.PIPE)
-#	popen.wait()
-#	output = popen.stdout.read()
-#	print output

@@ -2,7 +2,7 @@ import os.path, random
 
 tmp_path = '/home/sbordt/Desktop/masterthesis_tmp/'
 
-storage_path = '/media/sbordt/LINUXSHARE/masterthesis_data/'
+storage_path = '/home/sbordt/Desktop/masterthesis_data/'
 
 # this function loops forever if there are more than 100000 temporary files but that will work for now
 def tmp_mat_file_path():

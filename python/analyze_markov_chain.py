@@ -77,7 +77,6 @@ def compute_d_tv(mat):
 	return mat
 
 def plot_mixing(mat):
-
 	x = get_iteration_steps(mat)
 	fig = plt.figure()
 

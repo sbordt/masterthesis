@@ -17,6 +17,9 @@ def analyze_graph_srw(G):
 	mat = sio.loadmat(mat_path)
 	mat = analyze_markov_chain(mat)
 
+	# plot the mixing!
+	plot_mixing(mat)
+
 	# remove the temporary file
 	os.remove(mat_path)
 
