@@ -46,5 +46,8 @@ def get_tv_mixing(mat,i):
 		return x[0]
 
 	return x
+
+def get_nx_graph(mat):
+	return nx.from_scipy_sparse_matrix(mat['A'])
 	
 

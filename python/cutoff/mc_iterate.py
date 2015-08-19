@@ -8,6 +8,7 @@ import scipy.sparse as ssp
 import os, inspect, subprocess
 import scipy.io as sio
 from multiprocessing import Pool
+import config
 
 def load_P():
 	mat = sio.loadmat(tmp_path+"P.mat")

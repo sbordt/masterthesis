@@ -108,12 +108,27 @@ def grow_gw_trees_at_all_nodes(G, offspring, num_generations = 1e10):
 # Utilities
 ################################################################
 
-def show_graph(T):
+def graph_kernel(G):
+	# remove leaves first
+	kernel = nx.MultiGraph(nx.k_core(G,k=2))
+
+	# remove all nodes who have exactly tho neighbors and edges
+	for n in nx.nodes(kernel):
+		neighbors = list(nx.all_neighbors(kernel,n))
+		edges = nx.edges(kernel,nbunch=n)
+
+		if len(neighbors) == 2 and len(edges) == 2:
+			kernel.add_edge(neighbors[0],neighbors[1])
+			kernel.remove_node(n)
+
+	return kernel
+
+def show_graph(G):
 	pos = nx.graphviz_layout(G, prog='neato')
 	nx.draw(G, pos, with_labels=False, arrows=False)
 	plt.show()
 
-def show_tree(T):
+def show_tree(G):
 	pos = nx.graphviz_layout(G, prog='dot')
 	nx.draw(G, pos, with_labels=False, arrows=False)
 	plt.show()
