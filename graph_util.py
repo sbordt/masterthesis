@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 # functions to facilitate the generation of graphs with the networkx package
-import cutoff
 import matplotlib.pyplot as plt
 
 ################################################################
 # For the giant component of the Erdős–Rényi random graph
 ################################################################
+
 def erdos_renyi_giant_component(n,p):
 	g = nx.fast_gnp_random_graph(n,p)
 
@@ -46,34 +46,6 @@ def ergc_sparse_transition_matrix(n,p):
 
 	return cutoff.adjacency_to_sparse_transition_matrix(A)
 
-################################################################
-# Random walk on the line
-################################################################
-def line_adjacency_matrix(n):
-	A = ssp.lil_matrix((n,n))
-	A[0,1] = 1
-	A[n-1,n-2] = 1
-
-	for i in range(1,n-1):
-		A[i,i-1] = 1
-		A[i,i+1] = 1
-
-	return A
-
-# lazy random walk on the line
-def line_lazy_transition_matrix(n, p = 0.5):
-	P = ssp.lil_matrix((n,n))
-	P[0,0] = 0.5
-	P[0,1] = 0.5
-	P[n-1,n-1] = 0.5
-	P[n-1, n-2] = 0.5
-
-	for i in range(1,n-1):
-		P[i,i-1] = (1-p)/2
-		P[i,i] = 0.5
-		P[i,i+1] = p/2
-
-	return P
 
 ################################################################
 # Galton-Watson-Trees
