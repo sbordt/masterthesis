@@ -3,7 +3,7 @@ import networkx as nx
 
 import markovmixing as mkm
 
-execfile('graph_generation.py')
+execfile('graph_util.py')
 
 def generate_ginat_components(ig,n,_lambda,k):
 	for igc in range(0,k):

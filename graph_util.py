@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 ################################################################
 
 def erdos_renyi_giant_component(n,p):
+	""" Returns the giant component of an Erdős–Rényi random graph.
+	"""
 	g = nx.fast_gnp_random_graph(n,p)
 
 	number_of_nodes = 0
@@ -20,32 +22,62 @@ def erdos_renyi_giant_component(n,p):
 
 	return C_1
 
-#def ergc_contiguous_model(n,p):
-	#so.brentq(lambda x: x*)
+################################################################
+# Methods to compose graphs
+################################################################
 
+def glue_graphs(G, H, G_node, H_node):
+	""" Glue the graphs G and H identifying the nodes G_node and H_node. Keeps the node G_node and
+	removes the node H_node.
+	"""
+	G.add_node(G_node, G_node=0)
+	H.add_node(H_node, H_node=0)
 
+	I = nx.disjoint_union(G,H)
 
-def ergc_transition_matrix(n,p):
-	C_1 = erdos_renyi_giant_component(n,p)
+	# find the two nodes to identify in I
+	node0 = nx.get_node_attributes(I,'G_node').keys()[0]
+	node1 = nx.get_node_attributes(I,'H_node').keys()[0]
 
-	A = nx.to_numpy_matrix(C_1)
+	# add edges to node0 and remove node1
+	for neighbor in nx.all_neighbors(I,node1):
+		I.add_edge(node0,neighbor)
 
-	return cutoff.adjacency_to_transition_matrix(A)
+	I.remove_node(node1)
 
-def ergc_lazy_transition_matrix(n,p):
-	C_1 = erdos_renyi_giant_component(n,p)
+	del I.node[node0]['G_node'] 
+	del G.node[G_node]['G_node'] 
+	del H.node[H_node]['H_node']
 
-	A = nx.to_numpy_matrix(C_1)
+	# debug
+	#print G.nodes(data=True)
+	#print H.nodes(data=True)
+	#print I.nodes(data=True)
+	return I
 
-	return cutoff.adjacency_to_lazy_transition_matrix(A)
+def append_graph_to_all_nodes(G, H, H_node):
+	""" Append copies of the graph H to all nodes of G. Appends the node H_node of H.
+	"""
+	nx.set_node_attributes(G, 'original_graph', 0) 
+	I = G
 
-def ergc_sparse_transition_matrix(n,p):
-	C_1 = erdos_renyi_giant_component(n,p)
+	original_nodes = nx.get_node_attributes(I,'original_graph').keys()
 
-	A = nx.to_scipy_sparse_matrix(C_1)
+	while len(original_nodes) != 0:
+		node = original_nodes[0]
+		I.add_node(node, appending=0) # add an attribute to identify the node after joining
+		I = glue_graphs(I, H, node, H_node)
 
-	return cutoff.adjacency_to_sparse_transition_matrix(A)
+		node_in_I = nx.get_node_attributes(I,'appending').keys()[0]
+		del I.node[node_in_I]['appending']
+		del I.node[node_in_I]['original_graph'] 
 
+		# append H to the next node
+		original_nodes = nx.get_node_attributes(I,'original_graph').keys()
+		
+	# debug
+	#print I.nodes(data=True)
+	return I
 
 ################################################################
 # Galton-Watson-Trees
@@ -84,7 +116,7 @@ def graph_kernel(G):
 	# remove leaves first
 	kernel = nx.MultiGraph(nx.k_core(G,k=2))
 
-	# remove all nodes who have exactly tho neighbors and edges
+	# remove all nodes who have exactly two neighbors and edges
 	for n in nx.nodes(kernel):
 		neighbors = list(nx.all_neighbors(kernel,n))
 		edges = nx.edges(kernel,nbunch=n)

@@ -9,6 +9,10 @@ execfile('graph_util.py')
 G = nx.path_graph(10)
 A = nx.to_scipy_sparse_matrix(G)
 
+#show_graph(glue_graphs(nx.cycle_graph(5), nx.cycle_graph(10), 1,1))
+show_graph(append_graph_to_all_nodes(nx.cycle_graph(5), nx.path_graph(4),0))
+
+
 #grow_gw_trees_at_all_nodes(G,lambda: np.random.poisson(0.90, 1))
 #mkm.nx_graph_analyze_lazy_srw(G)
 
@@ -48,25 +52,10 @@ A = nx.to_scipy_sparse_matrix(G)
 
 
 
-#n = 1e5
-#lam = 1.05
-
-#my = scipy.optimize.brentq(lambda x: x*numpy.exp(-x)-lam*numpy.exp(-lam), 0, 1)
-
-#print my*numpy.exp(-my)
-#print lam*numpy.exp(-lam)
-
-#Lam = numpy.random.normal(lam-my,1/n)
-
-#D_u = numpy.random.poisson(Lam, n)
-
-#print D_u
-
-#print random.choice([0,0,2])
 
 
 
-#G = nx.path_graph(10)
+
 
 #G = nx.cycle_graph(200)
 #grow_gw_trees_at_all_nodes(G, lambda: numpy.random.poisson(0.95, 1))

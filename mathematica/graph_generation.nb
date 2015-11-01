@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     12621,        335]
-NotebookOptionsPosition[     11475,        292]
-NotebookOutlinePosition[     11818,        307]
-CellTagsIndexPosition[     11775,        304]
+NotebookDataLength[     14937,        398]
+NotebookOptionsPosition[     13595,        349]
+NotebookOutlinePosition[     13938,        364]
+CellTagsIndexPosition[     13895,        361]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -218,8 +218,8 @@ Cell[BoxData[{
   RowBox[{"G", " ", "=", 
    RowBox[{"RandomGraph", "[", 
     RowBox[{"BernoulliGraphDistribution", "[", 
-     RowBox[{"1000000", ",", 
-      RowBox[{"1.1", "/", "1000000"}]}], "]"}], "]"}]}], 
+     RowBox[{"5000000", ",", 
+      RowBox[{"1.05", "/", "5000000"}]}], "]"}], "]"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"Components", " ", "=", " ", 
@@ -233,24 +233,91 @@ Cell[BoxData[{
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"VertexCount", "[", "C1", "]"}], "\[IndentingNewLine]", 
  RowBox[{
+  RowBox[{"C1Core", " ", "=", 
+   RowBox[{"Subgraph", "[", 
+    RowBox[{"C1", ",", 
+     RowBox[{"First", "[", 
+      RowBox[{"KCoreComponents", "[", 
+       RowBox[{"C1", ",", "2"}], "]"}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"VertexCount", "[", "C1Core", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
   RowBox[{"Export", "[", 
-   RowBox[{"\"\<ergc.s6\>\"", ",", "C1"}], "]"}], 
+   RowBox[{"\"\<ergc_2core_1.s6\>\"", ",", "C1Core"}], "]"}], 
   ";"}], "\[IndentingNewLine]"}], "Input",
  CellChangeTimes->CompressedData["
-1:eJxTTMoPSmViYGAQBmIQPa2Xq5XB6LVjkR1bD4h+I35oMogOWPtqJoheZ/Nl
-LojOEnu1AEzfV1wFoicdmLYWRAc/bd4Gol1exGwH0e9K/XeD6GMt/ftBtAq7
-yVEQ/cIq7wyI/u8dfxFEC9x8fx1EPxF0uwOif030BtNXDCY9ANG3jNQfguh/
-h/R/gmivKwVg+s0rfj5GIJ3+JhtMr7LkjwbRy38Gg+kpNySbQHSZcFMziM7+
-2H8KRId/nXcaRP/rnXMFRF8TyLgKou+wK94B0bsYJ4NpAX+1pyB625UDz0D0
-DcN570B0waYbYBoAScyLdw==
+1:eJwdxU8oQ3EAB/D31DY52JOid9JKdsSSTEMrpixNW3KglCV/ViyhXDdyMcum
+lZqFi6zmgLb8qa0VB3NRD4+ejIz19prUqFFj39/h00c1Mm0eLaEoii3CPlfZ
+EqXJ6Gfa5StYqo57cV9I3MD7utwmnqwSt8hPqiD2xHwhbEk5w7gzPRTB2TnT
+Kb5YdEdxraLpHKdbp67wn3H4GjP3H3f4tcIg4J81I5lr8CTxg0b9jAvx+jzu
+4exkSVSW08XHJBs5qFUO4t28hbzOsw48X+lwYtun+xIPfAUSuODyc/iWGb/B
+gkIl4BPaS2ZMdSkc5mJvmG8MZLH9gCefsYnmb21Gbz5+bMPbnNWAd/qj5AlZ
+6SymlxfI7+qIC3fsMau4y289xLqa7iPc0vubxPIXWQ7/AxyuvZs=
   "]],
 
-Cell[BoxData["351436"], "Output",
+Cell[BoxData["461028"], "Output",
  CellChangeTimes->{
   3.6500948791425314`*^9, 3.650095100255762*^9, 3.650095253822298*^9, 
    3.6500953435760636`*^9, 3.650095866050227*^9, 3.6500967442412243`*^9, 
    3.650096786449309*^9, 3.6500968170937214`*^9, {3.6500968577871304`*^9, 
-   3.650096905816738*^9}, 3.650096958682646*^9, 3.650097000942919*^9}],
+   3.650096905816738*^9}, 3.650096958682646*^9, 3.650097000942919*^9, {
+   3.6542673092708406`*^9, 3.654267366100278*^9}, 3.654267438447564*^9, 
+   3.654267924303439*^9, 3.654268066117741*^9, 3.654268365041774*^9, 
+   3.6542688406550694`*^9}],
+
+Cell[BoxData["21154"], "Output",
+ CellChangeTimes->{
+  3.6500948791425314`*^9, 3.650095100255762*^9, 3.650095253822298*^9, 
+   3.6500953435760636`*^9, 3.650095866050227*^9, 3.6500967442412243`*^9, 
+   3.650096786449309*^9, 3.6500968170937214`*^9, {3.6500968577871304`*^9, 
+   3.650096905816738*^9}, 3.650096958682646*^9, 3.650097000942919*^9, {
+   3.6542673092708406`*^9, 3.654267366100278*^9}, 3.654267438447564*^9, 
+   3.654267924303439*^9, 3.654268066117741*^9, 3.654268365041774*^9, 
+   3.6542688411707263`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"SeedRandom", "[", "12", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"G", " ", "=", 
+   RowBox[{"RandomGraph", "[", 
+    RowBox[{"BernoulliGraphDistribution", "[", 
+     RowBox[{"25000000", ",", 
+      RowBox[{"1.05", "/", "25000000"}]}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Components", " ", "=", " ", 
+   RowBox[{"ConnectedComponents", "[", "G", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"C1", " ", "=", " ", 
+   RowBox[{"Subgraph", "[", 
+    RowBox[{"G", ",", 
+     RowBox[{"First", "[", "Components", "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"VertexCount", "[", "C1", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"C1Core", " ", "=", 
+   RowBox[{"Subgraph", "[", 
+    RowBox[{"C1", ",", 
+     RowBox[{"First", "[", 
+      RowBox[{"KCoreComponents", "[", 
+       RowBox[{"C1", ",", "2"}], "]"}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"VertexCount", "[", "C1Core", "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Export", "[", 
+   RowBox[{"\"\<ergc_2core_2.s6\>\"", ",", "C1Core"}], "]"}], ";"}]}], "Input",
+ CellChangeTimes->{{3.6542688746294947`*^9, 3.654268883223692*^9}, {
+  3.654269013524575*^9, 3.654269017321644*^9}}],
+
+Cell[BoxData["2365541"], "Output",
+ CellChangeTimes->{3.6542689950437264`*^9, 3.6542690779729033`*^9}],
+
+Cell[BoxData["118573"], "Output",
+ CellChangeTimes->{3.6542689950437264`*^9, 3.6542690789885798`*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -260,10 +327,7 @@ Cell[BoxData[
   ":", " "}], "\<\"The current computation was aborted because there was \
 insufficient memory available to complete the computation.\"\>"}]], "Message",\
  "MSG",
- CellChangeTimes->{
-  3.650096747163252*^9, {3.650096788960412*^9, 3.6500968171874733`*^9}, {
-   3.6500968591628036`*^9, 3.650096906928981*^9}, 3.6500969587295227`*^9, 
-   3.6500970020679774`*^9}],
+ CellChangeTimes->{3.6542689984188967`*^9, 3.65426907950423*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -275,19 +339,12 @@ caught with Catch[\[Ellipsis], _SystemException]. \\!\\(\\*ButtonBox[\\\"\
 \[RightSkeleton]\\\", ButtonStyle->\\\"Link\\\", ButtonFrame->None, \
 ButtonData:>\\\"paclet:ref/Throw\\\", ButtonNote -> \\\"Throw::sysexc\\\"]\\)\
 \"\>"}]], "Message", "MSG",
- CellChangeTimes->{
-  3.650096747163252*^9, {3.650096788960412*^9, 3.6500968171874733`*^9}, {
-   3.6500968591628036`*^9, 3.650096906928981*^9}, 3.6500969587295227`*^9, 
-   3.6500970021773596`*^9}],
+ CellChangeTimes->{3.6542689984188967`*^9, 3.6542690796136117`*^9}],
 
 Cell[BoxData[
  RowBox[{"SystemException", "[", "\<\"MemoryAllocationFailure\"\>", 
   "]"}]], "Output",
- CellChangeTimes->{
-  3.6500948791425314`*^9, 3.650095100255762*^9, 3.650095253822298*^9, 
-   3.6500953435760636`*^9, 3.650095866050227*^9, 3.6500967442412243`*^9, 
-   3.650096786449309*^9, 3.6500968170937214`*^9, {3.6500968577871304`*^9, 
-   3.650096905816738*^9}, 3.650096958682646*^9, 3.6500970021773596`*^9}]
+ CellChangeTimes->{3.6542689950437264`*^9, 3.6542690796136117`*^9}]
 }, Open  ]]
 },
 WindowSize->{1354, 671},
@@ -331,11 +388,17 @@ Cell[7539, 188, 107, 1, 31, "Output"]
 Cell[7661, 192, 586, 15, 144, "Input"],
 Cell[8250, 209, 116, 1, 31, "Input"],
 Cell[CellGroupData[{
-Cell[8391, 214, 1209, 31, 242, "Input"],
-Cell[9603, 247, 344, 5, 31, "Output"],
-Cell[9950, 254, 462, 11, 21, "Message"],
-Cell[10415, 267, 626, 13, 21, "Message"],
-Cell[11044, 282, 415, 7, 31, "Output"]
+Cell[8391, 214, 1634, 41, 300, "Input"],
+Cell[10028, 257, 516, 8, 31, "Output"],
+Cell[10547, 267, 515, 8, 31, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11099, 280, 1265, 33, 278, "Input"],
+Cell[12367, 315, 102, 1, 31, "Output"],
+Cell[12472, 318, 101, 1, 31, "Output"],
+Cell[12576, 321, 330, 8, 21, "Message"],
+Cell[12909, 331, 497, 10, 21, "Message"],
+Cell[13409, 343, 170, 3, 64, "Output"]
 }, Open  ]]
 }
 ]
