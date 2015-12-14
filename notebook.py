@@ -31,17 +31,18 @@ random.seed(1)
 # nx.write_sparse6(G_2core, '/home/sbordt/Desktop/masterthesis_data/ergc_2core_2.s6')
 
 ################ Mixing on the 100-cycle ################
-# G = nx.cycle_graph(100)
 
-# mc = mkm.nx_graph_lazy_srw(G)
-# mc.add_random_delta_distributions(1)
-# mc.compute_tv_mixing()
+G = nx.cycle_graph(100)
 
-# plot the mixing
+mc = mkm.nx_graph_lazy_srw(G)
+mc.add_random_delta_distributions(1)
+mc.compute_tv_mixing()
+
+#plot the mixing
 # mc.plot_tv_mixing(0)
 
-# plot an the iterations
-# mc.plot_iteration(0,pow(2,7))	
+# convergence video
+mc.convergence_video('/home/sbordt/Desktop/cycle_lazy_100.avi', 0, 60)	
 
 ################ Mixing of the random walk on the 101-cycle ################
 
@@ -51,7 +52,7 @@ mc.set_stationary(mkm.uniform_distribution(n))
 mc.add_random_delta_distributions(1)
 mc.compute_tv_mixing()
 
-mc.plot_iteration(0,pow(2,10))
+mc.convergence_video('/home/sbordt/Desktop/cycle_biased_101.avi', 0, 60)
 
 
 ################ Mixing on the 100-cycle with appended binary trees ################
@@ -107,3 +108,11 @@ mc.plot_iteration(0,pow(2,10))
 
 # # plot the mixing
 # mc.plot_tv_mixing(0)
+
+################ lazy biased random walk on the line ################
+
+mc = mkm.MarkovChain(mkm.line_lazy_transition_matrix(100, p=0.51))
+mc.add_random_delta_distributions(1)
+mc.compute_tv_mixing()
+
+mc.convergence_video('/home/sbordt/Desktop/line_biased.avi', 0, 60)

@@ -24,27 +24,27 @@ execfile('graph_util.py')
 # for the SRW by appending GW-Tress
 ################################################################
 
-tao_by_num_offsprings = {}
+# tao_by_num_offsprings = {}
 
-for i in xrange(100000):
-	G = grow_gw_tree(lambda: numpy.random.poisson(0.95, 1))
+# for i in xrange(100000):
+# 	G = grow_gw_tree(lambda: numpy.random.poisson(0.95, 1))
 
-	while nx.number_of_nodes(G) == 1:
-		G = grow_gw_tree(lambda: numpy.random.poisson(0.95, 1))
+# 	while nx.number_of_nodes(G) == 1:
+# 		G = grow_gw_tree(lambda: numpy.random.poisson(0.95, 1))
 
-	# waiting time via Markov chain stationary distribution
-	mc = mkm.nx_graph_srw(G)
+# 	# waiting time via Markov chain stationary distribution
+# 	mc = mkm.nx_graph_srw(G)
 
-	if tao_by_num_offsprings.has_key(nx.number_of_nodes(G)) == False:
-		tao_by_num_offsprings[nx.number_of_nodes(G)] = []
+# 	if tao_by_num_offsprings.has_key(nx.number_of_nodes(G)) == False:
+# 		tao_by_num_offsprings[nx.number_of_nodes(G)] = []
 
-	tao_by_num_offsprings[nx.number_of_nodes(G)].append(1/mc.get_stationary_distribution()[0,0])
+# 	tao_by_num_offsprings[nx.number_of_nodes(G)].append(1/mc.get_stationary_distribution()[0,0])
 	
-for key in tao_by_num_offsprings.keys():
-	tao_by_num_offsprings[key] = numpy.mean(tao_by_num_offsprings[key])
+# for key in tao_by_num_offsprings.keys():
+# 	tao_by_num_offsprings[key] = numpy.mean(tao_by_num_offsprings[key])
 
-print tao_by_num_offsprings
-G = nx.cycle_graph(10)
+# print tao_by_num_offsprings
+# G = nx.cycle_graph(10)
 
 
 #grow_gw_trees_at_all_nodes(G,lambda: np.random.poisson(0.90, 1))
@@ -83,4 +83,3 @@ G = nx.cycle_graph(10)
 # print t
 
 # show_tree(G)
-

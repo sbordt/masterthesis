@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# functions to facilitate the generation of graphs with the networkx package
+""" functions to facilitate the generation of graphs with the networkx package
+"""
 import matplotlib.pyplot as plt
 
 ################################################################
@@ -82,31 +83,51 @@ def append_graph_to_all_nodes(G, H, H_node):
 ################################################################
 # Galton-Watson-Trees
 ################################################################
+ 
+def grow_gw_tree(offspring, n_gen = 1e10, directed = False):
+	""" Grow a Galton-Watson tree given an offspring distribution 
+	'offspring' up to a maximal number of generations 'n_gen'
+	(where the root belongs to generation 0).
 
-# grow a galton-watson-tree given an offspring distribution an a maximal number of generations (where the root belongs to generation 0)
-def grow_gw_tree(offspring, num_generations = 1e10):
+	Root of the tree will be the node '0'.
+
+	Every node has the attribute 'generation'. The root has 
+	'generation' = 0. 
+	
+	n_gen: Defaults to 1e10.
+	"""
 	G = nx.Graph()
-	G.add_node(1)
 
-	grow_gw_tree_at_node(G, G.nodes()[0], offspring, num_generations = num_generations)
+	if directed:
+		G = nx.DiGraph()
+
+	G.add_node(0, generation=0)
+
+	grow_gw_tree_at_node(G, G.nodes()[0], offspring, n_gen = n_gen)
 	return G
 
-def grow_gw_tree_at_node(G, node, offspring, num_generations = 1e10):
-	if num_generations == 0:
+def grow_gw_tree_at_node(G, node, offspring, n_gen = 1e10):
+	if n_gen == 0:
 		return
 
 	for i in range(0, offspring()):
-		if G.has_node(G.number_of_nodes()+1):
-			raise Exception('Node already exists.')
-		G.add_edge(node, G.number_of_nodes()+1)	# automatically adds the node
+		if G.has_node(G.number_of_nodes()):
+			raise Exception('To grow Gw-Trees, nodes should be numbered 0...n')
+		G.add_edge(node, G.number_of_nodes())	# automatically adds the node
 
-		grow_gw_tree_at_node(G, G.nodes()[G.number_of_nodes()-1], offspring, num_generations = num_generations -1)
+		# add attribute 'generation' if the parent has this attribute
+		generation = nx.get_node_attributes(G, 'generation')
 
-def grow_gw_trees_at_all_nodes(G, offspring, num_generations = 1e10):
+		if generation.has_key(node):
+			G.node[G.number_of_nodes()-1]['generation'] = generation[node]+1
+
+		grow_gw_tree_at_node(G, G.nodes()[G.number_of_nodes()-1], offspring, n_gen = n_gen -1)
+
+def grow_gw_trees_at_all_nodes(G, offspring, n_gen = 1e10):
 	nodes = G.nodes()
 
 	for n in nodes:
-		grow_gw_tree_at_node(G,n,offspring, num_generations = num_generations)
+		grow_gw_tree_at_node(G,n,offspring, n_gen = n_gen)
 
 ################################################################
 # Utilities
@@ -134,5 +155,5 @@ def show_graph(G):
 
 def show_tree(G):
 	pos = nx.graphviz_layout(G, prog='dot')
-	nx.draw(G, pos, with_labels=False, arrows=False)
+	nx.draw(G, pos, with_labels=True, arrows=False)
 	plt.show()
