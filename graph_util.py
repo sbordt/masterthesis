@@ -81,7 +81,7 @@ def append_graph_to_all_nodes(G, H, H_node):
 	return I
 
 ################################################################
-# Galton-Watson-Trees
+# Galton-Watson trees
 ################################################################
  
 def grow_gw_tree(offspring, n_gen = 1e10, directed = False):
@@ -133,20 +133,36 @@ def grow_gw_trees_at_all_nodes(G, offspring, n_gen = 1e10):
 # Utilities
 ################################################################
 
-def graph_kernel(G):
-	# remove leaves first
-	kernel = nx.MultiGraph(nx.k_core(G,k=2))
+def contract_paths(G):
+	""" Contract paths of degree-2 vertices as
+	long as this does not create a multigraph.
 
-	# remove all nodes who have exactly two neighbors and edges
-	for n in nx.nodes(kernel):
-		neighbors = list(nx.all_neighbors(kernel,n))
-		edges = nx.edges(kernel,nbunch=n)
+	Returns: A new graph with contracted paths.
+	"""
+	G = G.copy()
 
-		if len(neighbors) == 2 and len(edges) == 2:
-			kernel.add_edge(neighbors[0],neighbors[1])
-			kernel.remove_node(n)
+	# contract nodes who have exactly two neighbors,
+	# unless this would create a multigraph
+	for n in nx.nodes(G):
+		neighbors = list(nx.all_neighbors(G,n))
 
-	return kernel
+		if len(neighbors) == 2:
+			if not(G.has_edge(neighbors[0],neighbors[1])):
+				G.add_edge(neighbors[0],neighbors[1])
+				G.remove_node(n)
+
+	return G
+
+def pseudo_kernel(G):
+	""" Take the 2-core of G and then contract paths.
+
+	Returns: A new graph.
+	"""
+	return contract_paths(nx.k_core(G,k=2))	
+
+################################################################
+# Drawing
+################################################################	
 
 def show_graph(G):
 	pos = nx.graphviz_layout(G, prog='neato')
@@ -154,6 +170,11 @@ def show_graph(G):
 	plt.show()
 
 def show_tree(G):
+	pos = nx.graphviz_layout(G, prog='dot')
+	nx.draw(G, pos, arrows=False, node_size=100, node_color='k', edge_color='k', width=1.5)
+	plt.show()
+
+def show_tree_debug(G):
 	pos = nx.graphviz_layout(G, prog='dot')
 	nx.draw(G, pos, with_labels=True, arrows=False)
 	plt.show()

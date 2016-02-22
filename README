@@ -1,13 +1,5 @@
-Linux only. At the moment only the python code is relevant.
+This is the code relevant for the creation of all graphs and figures displayed in my masterthesis.
 
-*.mat file format for graph markov chains:
+There are two IPython notebooks, and one Mathematica notebook.
 
-N = n of markov chain
-
-A = adjacency matrix of graph
-
-P = transposed transition matrix of the markox chain
-
-x_t = matrix with any number of columns where each column is the distibution after time t and t=0 <=> inital distibution
-
-stationary = stationary distribution
+The python code makes use of my markovmixing package.
